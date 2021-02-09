@@ -57,9 +57,27 @@ let EqualizerPanel = ()=>{
         data.getNodeWithEqualization = getNodeWithEqualization;
         context.setData(data)
     })()
-    console.log(arrayOfBandwidthes)
+    let arrayOfControls = [];
+    let generateControls = ()=>{
+        for (let i =0; i< bandwidthNumber; i++){
+            let style = {
+                "transform": "rotate(-90deg)",
+                display:"inline-block",
+                marginTop:"5%",
+                marginBottom:"5%"
+            }
+            let onChange = ()=>{
+                filtersArray[i].gain.value = Math.floor(document.getElementById("control_"+i).value);
+                console.log(filtersArray)
+            }
+            let control = <input min={stopGail} max={passGail} type={"range"} style={style}
+                                 id={"control_"+i} onChange={onChange} step={1}/>
+            arrayOfControls.push(control)
+        }
+    }
+    generateControls();
     return <div>
-
+        {arrayOfControls}
     </div>
 }
 
