@@ -1,39 +1,59 @@
 import logo from './logo.svg';
 import './App.css';
 import EffectsPanel from "./EffectsPanel";
-import fetchAsAudioBuffer from "fetch-as-audio-buffer";
 import FileSelector from "./FileSelector";
-import {useContext} from 'react'
+import {useContext, useState} from 'react'
 import {UserContext} from "./Context";
 
 function App() {
     const context = useContext(UserContext);
-    (()=>{
+    const [wasStarted, setStarted] = useState();
+    const [wasStopped, setStopped] = useState();
+
+
+    let setAudioCtx = ()=>{
         let data = context.data;
         data.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         context.setData(data);
-    })()
-    let loadData = ()=>{
-        console.log(context)
-        fetchAsAudioBuffer(context.data.audioCtx, context.data.wayToAudiofile).then(
-            (audioBuffer)=>{
-                let sourceNode = context.data.audioCtx.createBufferSource()
-                sourceNode.buffer = audioBuffer;
-                let nodeWithEffect = context.data.getNodeWithEffect(context.data.effectId, sourceNode)
-                nodeWithEffect.connect(context.data.audioCtx.destination)
-                sourceNode.start();
-            }
-        )
+    }
+    setAudioCtx();
+    let startPlaying = ()=>{
+        if (!context.data.sourceNode){
+            alert("Требуется загрузить исходный файл!")
+            return null;
+        }
+        let nodeWithEffect = context.data.getNodeWithEffect(context.data.effectId, context.data.sourceNode)
+        nodeWithEffect.connect(context.data.audioCtx.destination)
+        context.data.sourceNode.start();
+        setStarted(true);
+    }
+    let stopPlaying = ()=>{
+        if (context.data.sourceNode) {
+            context.data.sourceNode.stop();
+            setStopped(true);
+        }
+
+    }
+    let reinit = ()=>{
+        setAudioCtx();
+        context.data.setSourceNode();
+        setStopped(false);
+        setStarted(false);
     }
     return (
-
         <div className="App">
             <FileSelector/>
             <EffectsPanel/>
-            <div onClick={loadData}>
+            <div></div>
+            <button onClick={startPlaying} id={"start"} disabled={wasStarted}>
                 Start
-            </div>
-
+            </button>
+            <button onClick={stopPlaying} id={"stop"} disabled={!(wasStarted && !wasStopped)}>
+                Stop
+            </button>
+            <button onClick={reinit} id={"reinit"} disabled={!wasStopped}>
+            Reinit
+            </button>
         </div>
     );
 }
