@@ -14,7 +14,7 @@ let FileSelector = ()=>{
                 let data = context.data;
                 data.sourceNode = sourceNode;
                 context.setData(data)
-                alert("loaded")
+                document.dispatchEvent(new Event("fileLoaded"))
             }
         )
     }

@@ -9,14 +9,15 @@ function App() {
     const context = useContext(UserContext);
     const [wasStarted, setStarted] = useState();
     const [wasStopped, setStopped] = useState();
-
+    const [wasFileLoaded, setFileLoaded] = useState(false);
 
     let setAudioCtx = ()=>{
         let data = context.data;
         data.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         context.setData(data);
     }
-    setAudioCtx();
+    if (!context.data.audioCtx)
+        setAudioCtx();
     let startPlaying = ()=>{
         if (!context.data.sourceNode){
             alert("Требуется загрузить исходный файл!")
@@ -39,13 +40,19 @@ function App() {
         context.data.setSourceNode();
         setStopped(false);
         setStarted(false);
+        setFileLoaded(false);
     }
+    document.addEventListener("fileLoaded", ()=>{
+        if (!wasFileLoaded) {
+            setFileLoaded(true);
+        }
+    })
     return (
         <div className="App">
             <FileSelector/>
             <EffectsPanel/>
             <div></div>
-            <button onClick={startPlaying} id={"start"} disabled={wasStarted}>
+            <button onClick={startPlaying} id={"start"} disabled={wasStarted || ! wasFileLoaded}>
                 Start
             </button>
             <button onClick={stopPlaying} id={"stop"} disabled={!(wasStarted && !wasStopped)}>
