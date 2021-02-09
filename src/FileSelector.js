@@ -16,7 +16,9 @@ let FileSelector = ()=>{
                 context.setData(data)
                 document.dispatchEvent(new Event("fileLoaded"))
             }
-        )
+        ).catch((exeption)=>{
+            alert("Error while loading")
+        })
     }
 
     (()=>{

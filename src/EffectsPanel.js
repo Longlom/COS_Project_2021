@@ -1,16 +1,12 @@
-import React, {useContext} from 'react'
+import React, {useContext, useState} from 'react'
 import {UserContext} from "./Context";
 import overdrive from "web-audio-components/overdrive";
 import SimpleReverb from "web-audio-components/simple-reverb";
 
 let EffectsPanel = ()=>{
     const context = useContext(UserContext);
-    let effectId = 0;
-    let setEffectIdToContext = (id)=>{
-        let data = context.data;
-        data.effectId = id;
-        context.setData(data);
-    }
+    const [isLoaded, setLoaded] = useState(false);
+    const [effectId, setEffectId] = useState(0);
     let getNodeWithEffect = (sourceNode)=>{
         if (effectId) {
             let effect = createEffect(context.data.audioCtx, effectId);
@@ -45,15 +41,17 @@ let EffectsPanel = ()=>{
         data.getNodeWithEffect = getNodeWithEffect;
         context.setData(data);
     })()
-    setEffectIdToContext(0);
+    document.addEventListener("fileLoaded", ()=>{
+        setLoaded(true)
+    })
     return <div>
             <div id={"effectSelector"}>
-                <input type={"radio"} id = "over" name = "effect" value={"2"}
-                       onChange={()=>{effectId=2;}}/> Овердрайв <br/>
-                <input type={"radio"} id = "reverb" name = "effect" value={"1"}
-                       onChange={()=>{effectId=1;}}/> Ревербация <br/>
-                <input type={"radio"} id = "clr" name = "effect" value={"0"}
-                       onChange={()=>{effectId=0;}}/> Чистый звук <br/>
+                <input type={"radio"} disabled={!isLoaded} name = "effect" value={"2"}
+                       onChange={()=>{setEffectId(2)}}/> Овердрайв <br/>
+                <input type={"radio"} disabled={!isLoaded} name = "effect" value={"1"}
+                       onChange={()=>{setEffectId(1)}}/> Ревербация <br/>
+                <input type={"radio"} disabled={!isLoaded} name = "effect" value={"0"}
+                       onChange={()=>{setEffectId(0)}} /> Чистый звук <br/>
             </div>
     </div>
 }

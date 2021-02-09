@@ -19,13 +19,11 @@ function App() {
     }
     if (!context.data.audioCtx)
         setAudioCtx();
+
     let startPlaying = ()=>{
-        if (!context.data.sourceNode){
-            alert("Требуется загрузить исходный файл!")
-            return null;
-        }
         let nodeWithEffect = context.data.getNodeWithEffect(context.data.sourceNode)
-        nodeWithEffect.connect(context.data.audioCtx.destination)/*equalizer will be inserted heer*/
+        let nodeWithEqualizerAndEffects = context.data.getNodeWithEqualization(nodeWithEffect);
+        nodeWithEqualizerAndEffects.connect(context.data.audioCtx.destination)
         context.data.sourceNode.start();
         setStarted(true);
     }

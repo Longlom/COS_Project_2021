@@ -43,10 +43,20 @@ let EqualizerPanel = ()=>{
         return filter;
     })
 
-    filtersArray.reduce((prev, curr)=>{
+
+    let filters = filtersArray.reduce((prev, curr)=>{
         prev.connect(curr);
         return curr;
-    })
+    });
+    (()=>{
+        let data = context.data;
+        let getNodeWithEqualization = (sourceNode)=>{
+            sourceNode.connect(filters);
+            return filters;
+        }
+        data.getNodeWithEqualization = getNodeWithEqualization;
+        context.setData(data)
+    })()
     console.log(arrayOfBandwidthes)
     return <div>
 
