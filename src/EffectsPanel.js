@@ -5,12 +5,13 @@ import SimpleReverb from "web-audio-components/simple-reverb";
 
 let EffectsPanel = ()=>{
     const context = useContext(UserContext);
+    let effectId = 0;
     let setEffectIdToContext = (id)=>{
         let data = context.data;
         data.effectId = id;
         context.setData(data);
     }
-    let getNodeWithEffect = (effectId, sourceNode)=>{
+    let getNodeWithEffect = (sourceNode)=>{
         if (effectId) {
             let effect = createEffect(context.data.audioCtx, effectId);
             sourceNode.connect(effect.input);
@@ -19,7 +20,7 @@ let EffectsPanel = ()=>{
         else
             return sourceNode;
     }
-    let createEffect = (context, effectId)=>{
+    let createEffect = (context)=>{
         if (effectId === 2){
             let param = {
                 preBand: 1.0,
@@ -48,11 +49,11 @@ let EffectsPanel = ()=>{
     return <div>
             <div id={"effectSelector"}>
                 <input type={"radio"} id = "over" name = "effect" value={"2"}
-                       onChange={()=>{setEffectIdToContext(2)}}/> Овердрайв <br/>
+                       onChange={()=>{effectId=2;}}/> Овердрайв <br/>
                 <input type={"radio"} id = "reverb" name = "effect" value={"1"}
-                       onChange={()=>{setEffectIdToContext(1)}}/> Ревербация <br/>
+                       onChange={()=>{effectId=1;}}/> Ревербация <br/>
                 <input type={"radio"} id = "clr" name = "effect" value={"0"}
-                       onChange={()=>{setEffectIdToContext(0)}}/> Чистый звук <br/>
+                       onChange={()=>{effectId=0;}}/> Чистый звук <br/>
             </div>
     </div>
 }

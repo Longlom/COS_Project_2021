@@ -1,6 +1,7 @@
 import logo from './logo.svg';
 import './App.css';
 import EffectsPanel from "./EffectsPanel";
+import EqualizerPanel from "./EqualizerPanel";
 import FileSelector from "./FileSelector";
 import {useContext, useState} from 'react'
 import {UserContext} from "./Context";
@@ -23,8 +24,8 @@ function App() {
             alert("Требуется загрузить исходный файл!")
             return null;
         }
-        let nodeWithEffect = context.data.getNodeWithEffect(context.data.effectId, context.data.sourceNode)
-        nodeWithEffect.connect(context.data.audioCtx.destination)
+        let nodeWithEffect = context.data.getNodeWithEffect(context.data.sourceNode)
+        nodeWithEffect.connect(context.data.audioCtx.destination)/*equalizer will be inserted heer*/
         context.data.sourceNode.start();
         setStarted(true);
     }
@@ -51,6 +52,7 @@ function App() {
         <div className="App">
             <FileSelector/>
             <EffectsPanel/>
+            <EqualizerPanel/>
             <div></div>
             <button onClick={startPlaying} id={"start"} disabled={wasStarted || ! wasFileLoaded}>
                 Start
