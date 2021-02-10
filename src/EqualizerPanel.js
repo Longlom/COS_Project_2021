@@ -2,7 +2,7 @@ import React, {useContext} from 'react'
 import {UserContext} from "./Context";
 
 let EqualizerPanel = ()=>{
-    const bandwidthNumber = 10;
+    const bandwidthNumber = 2;
     const minFreq = 20;
     const maxFreq = 20000;
     const crossingPart = 0.05;
@@ -37,8 +37,7 @@ let EqualizerPanel = ()=>{
     let filtersArray = arrayOfBandwidthes.map((value, index, array)=>{
         let filter = context.data.audioCtx.createBiquadFilter();
         filter.frequency.value = value.frequency;
-        filter.Q.value = 1;
-        filter.gain.value = -3;
+        filter.Q.value = 2000;
         filter.type = "peaking";
         return filter;
     })
@@ -70,7 +69,7 @@ let EqualizerPanel = ()=>{
                 filtersArray[i].gain.value = Math.floor(document.getElementById("control_"+i).value);
                 console.log(filtersArray)
             }
-            let control = <input min={stopGail} max={passGail} type={"range"} style={style}
+            let control = <input min={-300} max={300} type={"range"} style={style}
                                  id={"control_"+i} onChange={onChange} step={1}/>
             arrayOfControls.push(control)
         }
