@@ -17,7 +17,6 @@ let EqualizerPanel = ()=>{
     arrayOfBounds = arrayOfBounds.reverse();
 
    // arrayOfBounds = [2000, 4000, 6000, 8000, 10000, 12000,14000,16000,18000]
-    console.log(arrayOfBounds);
     let arrayOfBandwidthes=[];
     arrayOfBandwidthes.push({min:0, max:arrayOfBounds[0]});
     for (let i =1; i< bandwidthNumber; i++){
@@ -40,7 +39,14 @@ let EqualizerPanel = ()=>{
     })
 
     let setQ = ()=>{
-
+        Q = document.getElementById("control_q").value;
+        console.log(filters)
+        if (filters)
+            filters = filters.map((value, index, array)=>{
+                value.Q.value = Q;
+                return value;
+            })
+        console.log(Q);
     }
     let filters = arrayOfBandwidthes.map((value, index, array)=>{
         let filter = context.data.audioCtx.createBiquadFilter();
