@@ -6,6 +6,7 @@ import FileSelector from "./FileSelector";
 import {useContext, useState} from 'react'
 import {UserContext} from "./Context";
 import Controls from "./Controls";
+import Spectrum from "./Spectrum";
 
 function App() {
     const context = useContext(UserContext);
@@ -24,6 +25,7 @@ function App() {
             <EffectsPanel/>
             <EqualizerPanel/>
             <Controls/>
+            <Spectrum/>
         </div>
     );
 }

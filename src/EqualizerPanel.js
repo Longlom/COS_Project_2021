@@ -6,8 +6,8 @@ let EqualizerPanel = ()=>{
     const minFreq = 20;
     const maxFreq = 20000;
     const crossingPart = 0.05;
-    const passGail = -3;
-    const stopGail = -70;
+    const passGail = 300;
+    const stopGail = -300;
     let context = useContext(UserContext);
     let arrayOfBounds = [];
     const [filterValues, setFilterValues] = useState(null);
