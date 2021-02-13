@@ -1,8 +1,8 @@
-import React, {useContext} from 'react'
+import React, {useContext, useState} from 'react'
 import {UserContext} from "./Context";
 
 let EqualizerPanel = ()=>{
-    const bandwidthNumber = 2;
+    const bandwidthNumber = 10;
     const minFreq = 20;
     const maxFreq = 20000;
     const crossingPart = 0.05;
@@ -10,9 +10,13 @@ let EqualizerPanel = ()=>{
     const stopGail = -70;
     let context = useContext(UserContext);
     let arrayOfBounds = [];
+    const [filterValues, setFilterValues] = useState(null);
     for (let i = 1; i< bandwidthNumber; i++)
         arrayOfBounds.push(((maxFreq-minFreq)/(Math.pow(2, i))));
     arrayOfBounds = arrayOfBounds.reverse();
+
+   // arrayOfBounds = [2000, 4000, 6000, 8000, 10000, 12000,14000,16000,18000]
+    console.log(arrayOfBounds);
     let arrayOfBandwidthes=[];
     arrayOfBandwidthes.push({min:0, max:arrayOfBounds[0]});
     for (let i =1; i< bandwidthNumber; i++){
@@ -37,17 +41,19 @@ let EqualizerPanel = ()=>{
     let filtersArray = arrayOfBandwidthes.map((value, index, array)=>{
         let filter = context.data.audioCtx.createBiquadFilter();
         filter.frequency.value = value.frequency;
-        filter.Q.value = 2000;
         filter.type = "peaking";
+        if (filterValues)
+            filter.gain.value = filterValues[index].gain.value;
+        filter.Q.value = 1;
         return filter;
     })
-
 
     let filters = filtersArray.reduce((prev, curr)=>{
         prev.connect(curr);
         return curr;
     });
-    (()=>{
+
+    let setNodeGetter = ()=>{
         let data = context.data;
         let getNodeWithEqualization = (sourceNode)=>{
             sourceNode.connect(filters);
@@ -55,8 +61,16 @@ let EqualizerPanel = ()=>{
         }
         data.getNodeWithEqualization = getNodeWithEqualization;
         context.setData(data)
-    })()
+    };
+    setNodeGetter();
     let arrayOfControls = [];
+    let debugOutput = ()=>{
+        let filtersData = '';
+        filtersArray.forEach((value, index, array)=>{
+            filtersData+=value.gain.value+" ";
+        })
+        console.log(filtersData);
+    }
     let generateControls = ()=>{
         for (let i =0; i< bandwidthNumber; i++){
             let style = {
@@ -67,10 +81,11 @@ let EqualizerPanel = ()=>{
             }
             let onChange = ()=>{
                 filtersArray[i].gain.value = Math.floor(document.getElementById("control_"+i).value);
-                console.log(filtersArray)
+                debugOutput();
+                setFilterValues(filtersArray);
             }
-            let control = <input min={-300} max={300} type={"range"} style={style}
-                                 id={"control_"+i} onChange={onChange} step={1}/>
+            let control = <input min={stopGail} max={passGail} type={"range"} style={style}
+                                 id={"control_"+i} onChange={onChange}/>
             arrayOfControls.push(control)
         }
     }
