@@ -11,8 +11,8 @@ let EqualizerPanel = ()=>{
     const defaultGain = -3;
     let Q = 1;
     let context = useContext(UserContext);
+    let volumeControl = context.data.audioCtx.createGain();
     let arrayOfBounds = [];
-    const [filterValues, setFilterValues] = useState(null);
     for (let i = 1; i< bandwidthNumber; i++)
         arrayOfBounds.push(((maxFreq-minFreq)/(Math.pow(2, i))));
     arrayOfBounds = arrayOfBounds.reverse();
@@ -47,7 +47,6 @@ let EqualizerPanel = ()=>{
                 value.Q.value = Q;
                 return value;
             })
-        console.log(Q);
     }
     let filters = arrayOfBandwidthes.map((value, index, array)=>{
         let filter = context.data.audioCtx.createBiquadFilter();
@@ -55,19 +54,21 @@ let EqualizerPanel = ()=>{
         filter.frequency.value = value.frequency; // частота
         filter.Q.value = Q; // Q-factor
         filter.gain.value = defaultGain;
-        if (filterValues)
-            filter.gain.value = filterValues[index].gain.value;
         return filter;
     });
+
 
     let setNodeGetter = ()=>{
 
         let getNodeWithEqualization = (sourceNode)=>{
+            volumeControl = context.data.audioCtx.createGain();
+            volumeControl.gain.value = 1;
             sourceNode.connect(filters[0]);
             for (let i =0; i<filters.length-1; i++)
                 filters[i].connect(filters[i+1]);
+            filters[filters.length-1].connect(volumeControl);
 
-            return filters[filters.length-1];
+            return volumeControl;
         }
         let data = context.data;
         data.getNodeWithEqualization = getNodeWithEqualization;
@@ -123,8 +124,24 @@ let EqualizerPanel = ()=>{
                 Q handler
             </div>
             <input min={1} max={100} type={"range"}
-               id={"control_q"} onChange={()=>{setQ()}}
-                defaultValue={1}
+                   id={"control_q"} onChange={()=>{setQ()}}
+                   defaultValue={1}
+            />
+        </div><br/>
+        <div>
+            <div>
+                volume handler
+            </div>
+            <input min={0}
+                   max={1}
+                   step={0.01}
+                   type={"range"}
+                   id={"control_volume"}
+                   onChange={()=>{
+                      volumeControl.gain.value = document.getElementById("control_volume").value;
+                        }
+                   }
+                   defaultValue={1}
             />
         </div>
     </div>

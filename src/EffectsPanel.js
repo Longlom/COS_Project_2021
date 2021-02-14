@@ -26,7 +26,6 @@ let EffectsPanel = ()=>{
     const defaultDecayRv = 2;
     const minDecayRv = 0.1;
     const maxDecayRv = 5;
-    const defaultReverse = true;
     let getNodeWithEffect = (sourceNode)=>{
         if (effectId) {
             let effect = createEffect(context.data.audioCtx, effectId);
