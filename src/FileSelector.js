@@ -31,6 +31,7 @@ let FileSelector = ()=>{
         <input type={"text"} id={"selectWay"} onChange={()=>{
             way = document.getElementById("selectWay").value;
         }}/>
+        <br/>
         <button onClick={()=>{
             document.getElementById("selectWay").value = defaultWay;
             way = defaultWay;

@@ -6,7 +6,7 @@ let Spectrum = ()=>{
 
     let setAnalyserConnected = (sourceNode)=>{
         let canvas = document.getElementById("canvas");
-        canvas.width = 400;
+        canvas.width = window.innerWidth*0.8;
         canvas.height = 300;
         let ctx = canvas.getContext("2d");
         let analyser = context.data.audioCtx.createAnalyser();
@@ -41,22 +41,11 @@ let Spectrum = ()=>{
         sourceNode.connect(analyser);
         return analyser;
     }
-
-
-
     (()=>{
         let data = context.data;
         data.getNodeWithAnalyser = setAnalyserConnected;
         context.setData(data);
     })()
-    document.addEventListener('fileLoaded', ()=>{
-
-        let canvas = document.getElementById("canvas");
-        canvas.width = 400;
-        canvas.height = 300;
-        let ctx = canvas.getContext("2d");
-
-    })
     return <div>
         <canvas id="canvas"/>
     </div>

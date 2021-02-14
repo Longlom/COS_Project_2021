@@ -11,15 +11,22 @@ let EffectsPanel = ()=>{
     const minGainOD = -100;
     const maxGainOD = 100;
     const defauldDainOD = 1.0;
-    const  minColor = 20;
-    const  maxColor = 20000;
-    const  defaultColor = 4000;
-    const  minOd = 0.0;
-    const  maxOd = 1.0;
-    const  defaultOd = 0.1;
+    const minColor = 20;
+    const maxColor = 20000;
+    const defaultColor = 4000;
+    const minOd = 0.0;
+    const maxOd = 1.0;
+    const defaultOd = 0.1;
     const defaultPostCut = 8000;
     const minPostCut = 20;
     const maxPostCut = 20000;
+    const minSecondsRv = 0.1;
+    const maxSecondsRv = 5;
+    const defaultSecondsRv = 3;
+    const defaultDecayRv = 2;
+    const minDecayRv = 0.1;
+    const maxDecayRv = 5;
+    const defaultReverse = true;
     let getNodeWithEffect = (sourceNode)=>{
         if (effectId) {
             let effect = createEffect(context.data.audioCtx, effectId);
@@ -31,7 +38,6 @@ let EffectsPanel = ()=>{
     }
     let createHandler = ()=>{
         if (effectId === 2) {
-
             let styleOd = {
                 display:"inline-block",
                 width:"25%"
@@ -114,9 +120,69 @@ let EffectsPanel = ()=>{
         }
 
         if (effectId === 1) {
-            return <div>1</div>
+            let styleRever = {
+                display:"inline-block",
+                width:"33%"
+            }
+            let commonStyle = {
+                border:"1px solid black",
+                margin:"2%"
+            }
+            return  <div style={commonStyle}>
+                <div>Reverberation Settings</div>
+                <div style={styleRever}>
+                    <div>
+                        seconds {/*Impulse response length.*/}
+                    </div>
+                    <input type={"range"}
+                           min={minSecondsRv}
+                           max={maxSecondsRv}
+                           step={"0.1"}
+                           defaultValue={defaultSecondsRv}
+                           id = {"seconds"}
+                           onChange={()=>{
+                               let paramLocal = param;
+                               paramLocal.seconds = document.getElementById("seconds").value;
+                               setParams(paramLocal);
+                               console.log(param)
+                           }}
+                    />
+                </div>
+                <div style={styleRever}>
+                    <div>
+                        decay {/*Impulse response decay rate*/}
+                    </div>
+                    <input type={"range"}
+                           min={minDecayRv}
+                           max={maxDecayRv}
+                           step={"0.1"}
+                           defaultValue={defaultDecayRv}
+                           id = {"decay"}
+                           onChange={()=>{
+                               let paramLocal = param;
+                               paramLocal.decay = document.getElementById("decay").value;
+                               setParams(paramLocal);
+                           }}
+                    />
+                </div>
+                <div style={styleRever}>
+                    <div>
+                        reverse {/*Reverse the impulse response.*/}
+                    </div>
+                    <input type={"checkbox"}
+                           defaultValue={defaultOd}
+                           id={"reverse"}
+                           onChange={()=>{
+                               let paramLocal = param;
+                               paramLocal.reverse = document.getElementById("reverse").checked;
+                               setParams(paramLocal);
+                               console.log(param)
+                           }}
+                    />
+                </div>
+            </div>
         }
-        return <div>0</div>
+        return <div>Ввод дополнительных параметров не требуется</div>
     }
     let createEffect = (context)=>{
         if (effectId === 2){
@@ -130,11 +196,11 @@ let EffectsPanel = ()=>{
             return new overdrive(context, param)
         }
         if (effectId === 1) {
-            let param = {
+            /*let param = {
                 seconds: 3,
                 decay: 2,
                 reverse: 1
-            }
+            }*/
             return new SimpleReverb(context, param)
         }
     }
