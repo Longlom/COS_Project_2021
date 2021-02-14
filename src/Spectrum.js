@@ -28,9 +28,9 @@ let Spectrum = ()=>{
             ctx.fillRect(0, 0, width, height);
             for (let i = 0; i < bufferLength; i++) {
                 barHeight = dataArray[i];
-                let r = barHeight + (25 * (i/bufferLength));
-                let g = 250 * (i/bufferLength);
-                let b = 50;
+                let r = barHeight/height*(255);
+                let g = 0;
+                let b = 0;
                 ctx.fillStyle = "rgb(" + r + "," + g + "," + b + ")";
                 ctx.fillRect(x, height - barHeight, barWidth, barHeight);
                 x += barWidth + 1;
