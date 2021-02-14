@@ -8,6 +8,7 @@ let EqualizerPanel = ()=>{
     const crossingPart = 0.05;
     const passGail =  -3;
     const stopGail = -70;
+    const defaultGain = -3;
     let Q = 1;
     let context = useContext(UserContext);
     let arrayOfBounds = [];
@@ -53,7 +54,7 @@ let EqualizerPanel = ()=>{
         filter.type = 'peaking'; // тип фильтра
         filter.frequency.value = value.frequency; // частота
         filter.Q.value = Q; // Q-factor
-        filter.gain.value = 0;
+        filter.gain.value = defaultGain;
         if (filterValues)
             filter.gain.value = filterValues[index].gain.value;
         return filter;
@@ -90,13 +91,26 @@ let EqualizerPanel = ()=>{
                 marginBottom:"5%"
             }
             let onChange = ()=>{
-                console.log(filters)
-                filters[i].gain.value = Math.floor(document.getElementById("control_"+i).value);
-                debugOutput();
-                setFilterValues(filters);
+
+                if (filters)
+                    filters = filters.map((value, index, array)=>{
+                        value.gain.value = document.getElementById("control_"+index).value;
+                        debugOutput();
+                        return value;
+                     });
+
+
             }
-            let control = <input min={stopGail} max={passGail} type={"range"} style={style}
-                                 id={"control_"+i} onChange={onChange}/>
+            let control = <input
+                min={stopGail}
+                max={passGail}
+                defaultValue={defaultGain}
+                type={"range"}
+                style={style}
+                id={"control_"+i}
+                onChange={onChange}
+
+            />
             arrayOfControls.push(control)
         }
     }

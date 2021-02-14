@@ -18,6 +18,7 @@ let FileSelector = ()=>{
             }
         ).catch((exeption)=>{
             alert("Error while loading")
+            console.log(exeption)
         })
     }
 
