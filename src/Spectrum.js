@@ -3,7 +3,38 @@ import {UserContext} from "./Context";
 
 let Spectrum = ()=>{
     let context = useContext(UserContext);
+    const [link, setLink] = useState(<div/>);
+    let experimentalOutputtoFile = (str)=>{
+        let href = "data:text/plain;charset=utf-8,%EF%BB%BF"+ encodeURIComponent(str);
+      let s =
+          <div>
+              <br/>
+              <a href= {href}
+                 download="text.txt">
+                 text.txt
+              </a>
+          </div>
+        setLink(s);
+    }
 
+    let arrayOfExperimentalData = [];
+    let writeExperimental = ()=>{
+        experimentalOutputtoFile(JSON.stringify(arrayOfExperimentalData));
+    }
+    let writen = false;
+    let fillExperimentalArray = (array)=>{
+        let limit = 300;
+        if (arrayOfExperimentalData.length<limit)
+            arrayOfExperimentalData.push(array);
+        else {
+            if (!writen)
+            {
+                writeExperimental();
+                alert(1);
+                writen=1;
+            }
+        }
+    }
     let setAnalyserConnected = (sourceNode)=>{
         let canvas = document.getElementById("canvas");
         canvas.width = window.innerWidth*0.8;
@@ -14,6 +45,7 @@ let Spectrum = ()=>{
         let  bufferLength = analyser.frequencyBinCount;
         console.log(bufferLength);
         let dataArray = new Uint8Array(bufferLength);
+
         let width = canvas.width;
         let height = canvas.height;
         let barWidth = (width / bufferLength) * 2.5;
@@ -24,6 +56,7 @@ let Spectrum = ()=>{
             requestAnimationFrame(renderFrame);
             x = 0;
             analyser.getByteFrequencyData(dataArray);
+            fillExperimentalArray(dataArray);
             ctx.fillStyle = "#000";
             ctx.fillRect(0, 0, width, height);
             for (let i = 0; i < bufferLength; i++) {
@@ -45,9 +78,12 @@ let Spectrum = ()=>{
         let data = context.data;
         data.getNodeWithAnalyser = setAnalyserConnected;
         context.setData(data);
-    })()
+    })();
+    /*EXPERIMENTAL*/
+
     return <div>
         <canvas id="canvas"/>
+        {link}
     </div>
 }
 export default Spectrum;

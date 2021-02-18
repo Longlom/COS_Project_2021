@@ -185,21 +185,11 @@ let EffectsPanel = ()=>{
     }
     let createEffect = (context)=>{
         if (effectId === 2){
-            /*let param = {
-                preBand: 1.0,
-                color: 4000,
-                drive: 0.8,
-                postCut: 8000
-            }*/
+
             console.log("new effect")
             return new overdrive(context, param)
         }
         if (effectId === 1) {
-            /*let param = {
-                seconds: 3,
-                decay: 2,
-                reverse: 1
-            }*/
             return new SimpleReverb(context, param)
         }
     }

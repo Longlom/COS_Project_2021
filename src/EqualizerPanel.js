@@ -99,8 +99,6 @@ let EqualizerPanel = ()=>{
                         debugOutput();
                         return value;
                      });
-
-
             }
             let control = <input
                 min={stopGail}
