@@ -20,25 +20,25 @@ let Spectrum = ()=>{
     let arrayOfExperimentalData = [];
     let writeExperimental = ()=>{
         let writeString = "";
-        for (let i in arrayOfExperimentalData)
-           for (let j in i)
-               writeString+=Object.values(j)[0] + "\t";
-           writeString +="\n";
+        writeString = JSON.stringify(arrayOfExperimentalData).replace(/(\[\{)|(\}\])/g,"")
+            .replace(/\}\,\{/g, "\n").replace(/\,/g, "")
+            .replace(/\"\d+":/g, "\t");
         experimentalOutputtoFile(writeString);
     }
     let writen = false;
     let fillExperimentalArray = (array)=>{
         let limit = 300;
         if (arrayOfExperimentalData.length<limit)
-            arrayOfExperimentalData.push(array);
+            arrayOfExperimentalData.push(JSON.parse(JSON.stringify(array)));
         else {
             if (!writen)
             {
                 writeExperimental();
-                alert(1);
                 writen=1;
+                console.log(arrayOfExperimentalData)
             }
         }
+
     }
     let setAnalyserConnected = (sourceNode)=>{
         let canvas = document.getElementById("canvas");
@@ -61,7 +61,6 @@ let Spectrum = ()=>{
             requestAnimationFrame(renderFrame);
             x = 0;
             analyser.getByteFrequencyData(dataArray);
-            console.log(dataArray);
             fillExperimentalArray(dataArray);
             ctx.fillStyle = "#000";
             ctx.fillRect(0, 0, width, height);
