@@ -19,7 +19,12 @@ let Spectrum = ()=>{
 
     let arrayOfExperimentalData = [];
     let writeExperimental = ()=>{
-        experimentalOutputtoFile(JSON.stringify(arrayOfExperimentalData));
+        let writeString = "";
+        for (let i in arrayOfExperimentalData)
+           for (let j in i)
+               writeString+=Object.values(j)[0] + "\t";
+           writeString +="\n";
+        experimentalOutputtoFile(writeString);
     }
     let writen = false;
     let fillExperimentalArray = (array)=>{
@@ -56,6 +61,7 @@ let Spectrum = ()=>{
             requestAnimationFrame(renderFrame);
             x = 0;
             analyser.getByteFrequencyData(dataArray);
+            console.log(dataArray);
             fillExperimentalArray(dataArray);
             ctx.fillStyle = "#000";
             ctx.fillRect(0, 0, width, height);
