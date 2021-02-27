@@ -1,21 +1,21 @@
-import logo from './logo.svg';
 import './App.css';
 import EffectsPanel from "./EffectsPanel";
 import EqualizerPanel from "./EqualizerPanel";
 import FileSelector from "./FileSelector";
-import {useContext, useState} from 'react'
+import {useContext} from 'react'
 import {UserContext} from "./Context";
 import Controls from "./Controls";
-import Spectrum from "./Spectrum";
+import Equaliser from "./Equaliser";
 
 function App() {
     const context = useContext(UserContext);
 
-    let setAudioCtx = ()=>{
+    const setAudioCtx = () => {
         let data = context.data;
         data.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         context.setData(data);
-    }
+    };
+
     if (!context.data.audioCtx)
         setAudioCtx();
 
@@ -25,7 +25,7 @@ function App() {
             <EffectsPanel/>
             <EqualizerPanel/>
             <Controls/>
-            <Spectrum/>
+            <Equaliser/>
         </div>
     );
 }

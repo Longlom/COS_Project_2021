@@ -1,53 +1,43 @@
-import React, {useState, useContext, useEffect} from 'react'
+import React, {useState, useContext} from 'react'
 import {UserContext} from "./Context";
 
-let Spectrum = ()=>{
+const Equaliser = () => {
     let context = useContext(UserContext);
     const [link, setLink] = useState(<div/>);
-    let experimentalOutputtoFile = (str)=>{
-        let href = "data:text/plain;charset=utf-8,%EF%BB%BF"+ encodeURIComponent(str);
-      let s =
-          <div>
-              <br/>
-              <a href= {href}
-                 download="text.txt">
-                 text.txt
-              </a>
-          </div>
+    let experimentalOutputtoFile = (str) => {
+        let href = "data:text/plain;charset=utf-8,%EF%BB%BF" + encodeURIComponent(str);
+        let s =
+            <div>
+                <br/>
+                <a href={href}
+                   download="text.txt">
+                    text.txt
+                </a>
+            </div>
         setLink(s);
-    }
+    };
 
-    let arrayOfExperimentalData = [];
-    let writeExperimental = ()=>{
-        let writeString = "";
-        writeString = JSON.stringify(arrayOfExperimentalData).replace(/(\[\{)|(\}\])/g,"")
-            .replace(/\}\,\{/g, "\n").replace(/\,/g, "")
-            .replace(/\"\d+":/g, "\t");
-        experimentalOutputtoFile(writeString);
-    }
-    let writen = false;
-    let fillExperimentalArray = (array)=>{
+    const fillExperimentalArray = (array) => {
         let limit = 300;
-        if (arrayOfExperimentalData.length<limit)
+        if (arrayOfExperimentalData.length < limit)
             arrayOfExperimentalData.push(JSON.parse(JSON.stringify(array)));
         else {
-            if (!writen)
-            {
+            if (!writen) {
                 writeExperimental();
-                writen=1;
+                writen = 1;
                 console.log(arrayOfExperimentalData)
             }
         }
+    };
 
-    }
-    let setAnalyserConnected = (sourceNode)=>{
+    const setAnalyserConnected = (sourceNode) => {
         let canvas = document.getElementById("canvas");
-        canvas.width = window.innerWidth*0.8;
+        canvas.width = window.innerWidth * 0.8;
         canvas.height = 300;
         let ctx = canvas.getContext("2d");
         let analyser = context.data.audioCtx.createAnalyser();
         analyser.fftSize = 256;
-        let  bufferLength = analyser.frequencyBinCount;
+        let bufferLength = analyser.frequencyBinCount;
         console.log(bufferLength);
         let dataArray = new Uint8Array(bufferLength);
 
@@ -57,38 +47,48 @@ let Spectrum = ()=>{
         let barHeight;
         let x = 0;
 
-        function renderFrame() {
+        (function renderFrame() {
             requestAnimationFrame(renderFrame);
             x = 0;
             analyser.getByteFrequencyData(dataArray);
             fillExperimentalArray(dataArray);
-            ctx.fillStyle = "#000";
+            ctx.fillStyle = "#b1b3b1";
             ctx.fillRect(0, 0, width, height);
             for (let i = 0; i < bufferLength; i++) {
                 barHeight = dataArray[i];
-                let r = barHeight/height*(255);
-                let g = 0;
-                let b = 0;
-                ctx.fillStyle = "rgb(" + r + "," + g + "," + b + ")";
+                ctx.fillStyle = `rgb(0, 128, 0)`;
                 ctx.fillRect(x, height - barHeight, barWidth, barHeight);
                 x += barWidth + 1;
             }
-        }
-        renderFrame();
-
+        })();
         sourceNode.connect(analyser);
         return analyser;
-    }
-    (()=>{
+    };
+
+    const writeExperimental = () => {
+        let writeString = "";
+        writeString = JSON.stringify(arrayOfExperimentalData).replace(/(\[\{)|(\}\])/g, "")
+            .replace(/\}\,\{/g, "\n").replace(/\,/g, "")
+            .replace(/\"\d+":/g, "\t");
+        experimentalOutputtoFile(writeString);
+    };
+
+    let arrayOfExperimentalData = [];
+    let writen = false;
+
+
+    (() => {
         let data = context.data;
         data.getNodeWithAnalyser = setAnalyserConnected;
         context.setData(data);
     })();
-    /*EXPERIMENTAL*/
 
     return <div>
         <canvas id="canvas"/>
         {link}
     </div>
-}
-export default Spectrum;
+};
+
+
+
+export default Equaliser;
