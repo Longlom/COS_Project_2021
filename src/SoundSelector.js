@@ -1,6 +1,7 @@
 import React, {useContext} from 'react'
 import {UserContext} from "./Context";
 import fetchAsAudioBuffer from "fetch-as-audio-buffer";
+import s from './styles/soundSelector.module.css'
 
 const SoundSelector = () => {
     const context = useContext(UserContext);
@@ -29,19 +30,19 @@ const SoundSelector = () => {
         context.setData(data);
     })();
 
-
-    return (<div>
-        <input type={"text"} id={"selectWay"} onChange={() => {
+    console.log(s);
+    return (<div className={s['sound-selector']}>
+        <input className={s['sound-selector__input']} type={"text"} id={"selectWay"} onChange={() => {
             way = document.getElementById("selectWay").value;
         }}/>
         <br/>
-        <button onClick={() => {
+        <button className={s['sound-selector__button_default']} onClick={() => {
             document.getElementById("selectWay").value = defaultWay;
             way = defaultWay;
         }}>
             Путь по умолчанию
         </button>
-        <button onClick={setSourceNode}>Загрузить</button>
+        <button className={s['sound-selector__button_download']} onClick={setSourceNode}>Загрузить</button>
     </div>)
 };
 export default SoundSelector;

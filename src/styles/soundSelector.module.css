@@ -1,0 +1,37 @@
+.sound-selector {
+    padding: 20px;
+}
+
+.sound-selector__input {
+    width: 500px;
+    padding: 5px;
+    border-radius: 5px;
+
+    outline: none;
+    margin-bottom: 15px;
+}
+
+.sound-selector__button_default {
+    background: transparent;
+    border-radius: 5px;
+    margin-right: 25px;
+    padding: 5px 10px;
+}
+
+.sound-selector__button_default:hover {
+    background: aliceblue;
+    cursor: pointer;
+}
+
+.sound-selector__button_download {
+    background: transparent;
+    border-radius: 5px;
+    margin-left: 25px;
+    padding: 5px 10px;
+}
+
+
+.sound-selector__button_download:hover {
+    background: aliceblue;
+    cursor: pointer;
+}

@@ -1,61 +1,73 @@
 import React, {useContext, useState} from 'react'
 import {UserContext} from "./Context";
-import overdrive from "web-audio-components/overdrive";
 import ADSREnvelope from "adsr-envelope";
 import SimpleReverb from "web-audio-components/simple-reverb";
+import s from './styles/effectPanel.module.css'
 
 const EffectsPanel = () => {
+
+
+    const context = useContext(UserContext);
+    const [isLoaded, setLoaded] = useState(false);
+    const [effectId, setEffectId] = useState(0);
+    const [param, setParams] = useState({});
+    const duration = 100;
+
+    const minGainAttack = 0;
+    const maxGainAttac = duration;
+    const defauldGainAttack = 25;
+
+    const minDecay = 0;
+    const maxDecay = duration;
+    const defaultDecay = 25;
+
+    const minSustain = 0.0;
+    const maxSustain = 1.0;
+    const defaultSustain = 0.5;
+
+    const defaultRelease = 25;
+    const minRelease = 0;
+    const maxRelease = duration;
+
+    const minSecondsRv = 0.1;
+    const maxSecondsRv = 5;
+    const defaultSecondsRv = 3;
+
+    const defaultDecayRv = 2;
+    const minDecayRv = 0.1;
+    const maxDecayRv = 5;
+
+    const defaultOd = 0.1;
     const createEffect = (context) => {
         if (effectId === 2) {
 
-            console.log("new effect");
-            // return new overdrive(context, param)
             console.log(param);
             let adsr = new ADSREnvelope({
-                attackTime: 0.01,
-                decayTime: 0.3,
+                duration: 15,
+                attackTime: 5,
+                decayTime: 5,
                 sustainLevel: 0.5,
-                releaseTime: 10,
+                releaseTime: 5,
                 gateTime: 1,
                 peakLevel: 1,
                 epsilon: 0.001,
                 attackCurve: "lin",
                 decayCurve: "lin",
-                releaseCurve: "lin"
+                releaseCurve: "lin",
             });
-            console.log(context);
+            for (const key in param) {
+                adsr[key] = +param[key];
+            }
+            console.log(adsr);
             let gain = context.createGain();
             adsr.applyTo(gain.gain, context.currentTime);
-return gain;
+            return gain;
         }
         if (effectId === 1) {
             return new SimpleReverb(context, param)
         }
     };
 
-    const context = useContext(UserContext);
-    const [isLoaded, setLoaded] = useState(false);
-    const [effectId, setEffectId] = useState(0);
-    const [param, setParams] = useState({});
-    const duration = 20;
-    const minGainAttack = -duration;
-    const maxGainAttac = duration;
-    const defauldGainAttack = 5;
-    const minColor = 20;
-    const maxColor = 20000;
-    const defaultColor = 4000;
-    const minOd = 0.0;
-    const maxOd = 1.0;
-    const defaultOd = 0.1;
-    const defaultPostCut = 8000;
-    const minPostCut = 20;
-    const maxPostCut = 20000;
-    const minSecondsRv = 0.1;
-    const maxSecondsRv = 5;
-    const defaultSecondsRv = 3;
-    const defaultDecayRv = 2;
-    const minDecayRv = 0.1;
-    const maxDecayRv = 5;
     const getNodeWithEffect = (sourceNode) => {
         if (effectId) {
             let effect = createEffect(context.data.audioCtx, effectId);
@@ -73,26 +85,24 @@ return gain;
         if (effectId === 2) {
             let styleOd = {
                 display: "inline-block",
-                width: "25%"
+                width: "20%"
             };
-            let commonStyle = {
-                border: "1px solid black",
-                margin: "2%"
-            };
-            return <div style={commonStyle}>
-                <div>Envelope Settings</div>
+
+            return <div className={s['effects-regulation']}>
+                <div className={s['effects-regulation__header']}>Envelope Settings</div>
                 <div style={styleOd}>
                     <div>
-                        Attack  {/*Pre-distortion bandpass filter wet gain coefficient.*/}
+                        Attack  {/*Attack is the time taken for initial run-up of level from nil to peak, beginning when the key is pressed.*/}
                     </div>
                     <input type={"range"}
                            min={minGainAttack}
                            max={maxGainAttac}
                            defaultValue={defauldGainAttack}
                            id={"Attack"}
+                           step={"1"}
                            onChange={() => {
                                let paramLocal = param;
-                               paramLocal.preBand = document.getElementById("Attack").value;
+                               paramLocal.attackTime = document.getElementById("Attack").value;
                                setParams(paramLocal);
                                console.log(param)
                            }}
@@ -100,33 +110,35 @@ return gain;
                 </div>
                 <div style={styleOd}>
                     <div>
-                        Decay {/*Pre-distortion bandpass filter frequency.*/}
+                        Decay {/*Decay is the time taken for the subsequent run down from the attack level to the designated sustain leve.*/}
                     </div>
                     <input type={"range"}
-                           min={minColor}
-                           max={maxColor}
-                           defaultValue={defaultColor}
-                           id={"color"}
+                           min={minDecay}
+                           max={maxDecay}
+                           defaultValue={defaultDecay}
+                           id={"decay"}
+                           step={"1"}
                            onChange={() => {
                                let paramLocal = param;
-                               paramLocal.color = document.getElementById("color").value;
+                               paramLocal.decayTime = document.getElementById("decay").value;
                                setParams(paramLocal);
+                               console.log(param);
                            }}
                     />
                 </div>
                 <div style={styleOd}>
                     <div>
-                        Sustain {/*Overdrive amount*/}
+                        Sustain {/*Sustain is the level during the main sequence of the sound's duration, until the key is released*/}
                     </div>
                     <input type={"range"}
-                           min={minOd}
-                           max={maxOd}
-                           defaultValue={defaultOd}
-                           id={"drive"}
+                           min={minSustain}
+                           max={maxSustain}
+                           defaultValue={defaultSustain}
+                           id={"sustain"}
                            step={"0.1"}
                            onChange={() => {
                                let paramLocal = param;
-                               paramLocal.drive = document.getElementById("drive").value;
+                               paramLocal.sustainLevel = document.getElementById("sustain").value;
                                setParams(paramLocal);
                                console.log(param)
                            }}
@@ -134,16 +146,35 @@ return gain;
                 </div>
                 <div style={styleOd}>
                     <div>
-                        Release {/*Post-distortion lowpass filter cutoff frequency.*/}
+                        Release {/*Release is the time taken for the level to decay from the sustain level to zero after the key is released.*/}
                     </div>
                     <input type={"range"}
-                           min={minPostCut}
-                           max={maxPostCut}
-                           defaultValue={defaultPostCut}
-                           id={"postcut"}
+                           min={minRelease}
+                           max={maxRelease}
+                           defaultValue={defaultRelease}
+                           id={"release"}
+                           step={"1"}
                            onChange={() => {
                                let paramLocal = param;
-                               paramLocal.postcut = document.getElementById("postcut").value;
+                               paramLocal.releaseTime = document.getElementById("release").value;
+                               setParams(paramLocal);
+                               console.log(param)
+                           }}
+                    />
+                </div>
+                <div style={styleOd}>
+                    <div>
+                        Duration {/*Release is the time taken for the level to decay from the sustain level to zero after the key is released.*/}
+                    </div>
+                    <input type={"range"}
+                           min={"0"}
+                           max={"100"}
+                           defaultValue={duration}
+                           id={"duration"}
+                           step={"1"}
+                           onChange={() => {
+                               let paramLocal = param;
+                               paramLocal.duration = document.getElementById("duration").value;
                                setParams(paramLocal);
                                console.log(param)
                            }}
@@ -157,14 +188,12 @@ return gain;
                 display: "inline-block",
                 width: "33%"
             };
-            let commonStyle = {
-                border: "1px solid black",
-                margin: "2%"
-            };
-            return <div style={commonStyle}>
-                <div>Reverberation Settings</div>
+
+            return <div  className={s['effects-regulation']}>
+                <div className={s['effects-regulation__header']}>Reverberation Settings</div>
+
                 <div style={styleRever}>
-                    <div>
+                    <div >
                         seconds {/*Impulse response length.*/}
                     </div>
                     <input type={"range"}
@@ -230,7 +259,8 @@ return gain;
     });
 
     return <div>
-        <div id={"effectSelector"}>
+        <div className={s.effects} id={"effectSelector"}>
+            <div>Эффекты звука</div>
             <input type={"radio"} disabled={!isLoaded} name="effect" value={"2"}
                    onChange={() => {
                        setEffectId(2)

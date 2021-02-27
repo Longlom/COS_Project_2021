@@ -36,7 +36,7 @@ const Equaliser = () => {
         canvas.height = 300;
         let ctx = canvas.getContext("2d");
         let analyser = context.data.audioCtx.createAnalyser();
-        analyser.fftSize = 8192;
+        analyser.fftSize = 4096;
         let bufferLength = analyser.frequencyBinCount;
         console.log(bufferLength);
         let dataArray = new Uint8Array(bufferLength);

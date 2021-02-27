@@ -1,0 +1,33 @@
+.effects {
+    margin: 0 auto;
+
+    border: 1px solid black;
+    padding: 20px;
+    width: 300px;
+    margin-bottom: 25px;
+}
+
+.effects > input {
+    margin-top: 15px;
+}
+
+.effects-regulation {
+    padding: 15px;
+    margin: 0 auto;
+
+    width: 90%;
+
+    border:1px solid black;
+}
+
+.effects-regulation__header {
+
+    margin-bottom: 25px;
+    font-size: 22px;
+}
+
+.effects-regulation__regulators {
+    display: flex;
+
+    justify-content: space-between;
+}
