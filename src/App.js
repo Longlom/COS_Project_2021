@@ -1,7 +1,7 @@
 import './App.css';
 import EffectsPanel from "./EffectsPanel";
 import EqualizerPanel from "./EqualizerPanel";
-import FileSelector from "./FileSelector";
+import SoundSelector from "./SoundSelector";
 import {useContext} from 'react'
 import {UserContext} from "./Context";
 import Controls from "./Controls";
@@ -21,7 +21,7 @@ function App() {
 
     return (
         <div className="App">
-            <FileSelector/>
+            <SoundSelector/>
             <EffectsPanel/>
             <EqualizerPanel/>
             <Controls/>

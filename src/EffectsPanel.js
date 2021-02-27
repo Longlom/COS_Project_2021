@@ -1,16 +1,46 @@
 import React, {useContext, useState} from 'react'
 import {UserContext} from "./Context";
 import overdrive from "web-audio-components/overdrive";
+import ADSREnvelope from "adsr-envelope";
 import SimpleReverb from "web-audio-components/simple-reverb";
 
-let EffectsPanel = ()=>{
+const EffectsPanel = () => {
+    const createEffect = (context) => {
+        if (effectId === 2) {
+
+            console.log("new effect");
+            // return new overdrive(context, param)
+            console.log(param);
+            let adsr = new ADSREnvelope({
+                attackTime: 0.01,
+                decayTime: 0.3,
+                sustainLevel: 0.5,
+                releaseTime: 10,
+                gateTime: 1,
+                peakLevel: 1,
+                epsilon: 0.001,
+                attackCurve: "lin",
+                decayCurve: "lin",
+                releaseCurve: "lin"
+            });
+            console.log(context);
+            let gain = context.createGain();
+            adsr.applyTo(gain.gain, context.currentTime);
+return gain;
+        }
+        if (effectId === 1) {
+            return new SimpleReverb(context, param)
+        }
+    };
+
     const context = useContext(UserContext);
     const [isLoaded, setLoaded] = useState(false);
     const [effectId, setEffectId] = useState(0);
     const [param, setParams] = useState({});
-    const minGainOD = -100;
-    const maxGainOD = 100;
-    const defauldDainOD = 1.0;
+    const duration = 20;
+    const minGainAttack = -duration;
+    const maxGainAttac = duration;
+    const defauldGainAttack = 5;
     const minColor = 20;
     const maxColor = 20000;
     const defaultColor = 4000;
@@ -26,39 +56,43 @@ let EffectsPanel = ()=>{
     const defaultDecayRv = 2;
     const minDecayRv = 0.1;
     const maxDecayRv = 5;
-    let getNodeWithEffect = (sourceNode)=>{
+    const getNodeWithEffect = (sourceNode) => {
         if (effectId) {
             let effect = createEffect(context.data.audioCtx, effectId);
-            sourceNode.connect(effect.input);
+            console.log(effect);
+            if (effectId === 2) {
+                sourceNode.connect(effect);
+            } else {
+                sourceNode.connect(effect.input);
+            }
             return effect;
-        }
-        else
+        } else
             return sourceNode;
-    }
-    let createHandler = ()=>{
+    };
+    const createHandler = () => {
         if (effectId === 2) {
             let styleOd = {
-                display:"inline-block",
-                width:"25%"
-            }
+                display: "inline-block",
+                width: "25%"
+            };
             let commonStyle = {
-                border:"1px solid black",
-                margin:"2%"
-            }
+                border: "1px solid black",
+                margin: "2%"
+            };
             return <div style={commonStyle}>
-                <div>Overdrive Settings</div>
+                <div>Envelope Settings</div>
                 <div style={styleOd}>
                     <div>
-                        preBand {/*Pre-distortion bandpass filter wet gain coefficient.*/}
+                        Attack  {/*Pre-distortion bandpass filter wet gain coefficient.*/}
                     </div>
                     <input type={"range"}
-                           min={minGainOD}
-                           max={maxGainOD}
-                           defaultValue={defauldDainOD}
-                           id = {"preBandOD"}
-                           onChange={()=>{
+                           min={minGainAttack}
+                           max={maxGainAttac}
+                           defaultValue={defauldGainAttack}
+                           id={"Attack"}
+                           onChange={() => {
                                let paramLocal = param;
-                               paramLocal.preBand = document.getElementById("preBandOD").value;
+                               paramLocal.preBand = document.getElementById("Attack").value;
                                setParams(paramLocal);
                                console.log(param)
                            }}
@@ -66,14 +100,14 @@ let EffectsPanel = ()=>{
                 </div>
                 <div style={styleOd}>
                     <div>
-                        color {/*Pre-distortion bandpass filter frequency.*/}
+                        Decay {/*Pre-distortion bandpass filter frequency.*/}
                     </div>
                     <input type={"range"}
                            min={minColor}
                            max={maxColor}
                            defaultValue={defaultColor}
-                           id = {"color"}
-                           onChange={()=>{
+                           id={"color"}
+                           onChange={() => {
                                let paramLocal = param;
                                paramLocal.color = document.getElementById("color").value;
                                setParams(paramLocal);
@@ -82,15 +116,15 @@ let EffectsPanel = ()=>{
                 </div>
                 <div style={styleOd}>
                     <div>
-                        drive {/*Overdrive amount*/}
+                        Sustain {/*Overdrive amount*/}
                     </div>
                     <input type={"range"}
                            min={minOd}
                            max={maxOd}
                            defaultValue={defaultOd}
-                           id = {"drive"}
+                           id={"drive"}
                            step={"0.1"}
-                           onChange={()=>{
+                           onChange={() => {
                                let paramLocal = param;
                                paramLocal.drive = document.getElementById("drive").value;
                                setParams(paramLocal);
@@ -100,14 +134,14 @@ let EffectsPanel = ()=>{
                 </div>
                 <div style={styleOd}>
                     <div>
-                        postcut {/*Post-distortion lowpass filter cutoff frequency.*/}
+                        Release {/*Post-distortion lowpass filter cutoff frequency.*/}
                     </div>
                     <input type={"range"}
                            min={minPostCut}
                            max={maxPostCut}
                            defaultValue={defaultPostCut}
-                           id = {"postcut"}
-                           onChange={()=>{
+                           id={"postcut"}
+                           onChange={() => {
                                let paramLocal = param;
                                paramLocal.postcut = document.getElementById("postcut").value;
                                setParams(paramLocal);
@@ -120,14 +154,14 @@ let EffectsPanel = ()=>{
 
         if (effectId === 1) {
             let styleRever = {
-                display:"inline-block",
-                width:"33%"
-            }
+                display: "inline-block",
+                width: "33%"
+            };
             let commonStyle = {
-                border:"1px solid black",
-                margin:"2%"
-            }
-            return  <div style={commonStyle}>
+                border: "1px solid black",
+                margin: "2%"
+            };
+            return <div style={commonStyle}>
                 <div>Reverberation Settings</div>
                 <div style={styleRever}>
                     <div>
@@ -138,8 +172,8 @@ let EffectsPanel = ()=>{
                            max={maxSecondsRv}
                            step={"0.1"}
                            defaultValue={defaultSecondsRv}
-                           id = {"seconds"}
-                           onChange={()=>{
+                           id={"seconds"}
+                           onChange={() => {
                                let paramLocal = param;
                                paramLocal.seconds = document.getElementById("seconds").value;
                                setParams(paramLocal);
@@ -156,8 +190,8 @@ let EffectsPanel = ()=>{
                            max={maxDecayRv}
                            step={"0.1"}
                            defaultValue={defaultDecayRv}
-                           id = {"decay"}
-                           onChange={()=>{
+                           id={"decay"}
+                           onChange={() => {
                                let paramLocal = param;
                                paramLocal.decay = document.getElementById("decay").value;
                                setParams(paramLocal);
@@ -171,7 +205,7 @@ let EffectsPanel = ()=>{
                     <input type={"checkbox"}
                            defaultValue={defaultOd}
                            id={"reverse"}
-                           onChange={()=>{
+                           onChange={() => {
                                let paramLocal = param;
                                paramLocal.reverse = document.getElementById("reverse").checked;
                                setParams(paramLocal);
@@ -182,38 +216,37 @@ let EffectsPanel = ()=>{
             </div>
         }
         return <div>Ввод дополнительных параметров не требуется</div>
-    }
-    let createEffect = (context)=>{
-        if (effectId === 2){
+    };
 
-            console.log("new effect")
-            return new overdrive(context, param)
-        }
-        if (effectId === 1) {
-            return new SimpleReverb(context, param)
-        }
-    }
 
-    (()=>{
+    (() => {
         let data = context.data;
         data.getNodeWithEffect = getNodeWithEffect;
         context.setData(data);
-    })()
-    document.addEventListener("fileLoaded", ()=>{
+    })();
+
+    document.addEventListener("fileLoaded", () => {
         setLoaded(true)
-    })
+    });
+
     return <div>
-            <div id={"effectSelector"}>
-                <input type={"radio"} disabled={!isLoaded} name = "effect" value={"2"}
-                       onChange={()=>{setEffectId(2)}}/> Овердрайв <br/>
-                <input type={"radio"} disabled={!isLoaded} name = "effect" value={"1"}
-                       onChange={()=>{setEffectId(1)}}/> Ревербация <br/>
-                <input type={"radio"} disabled={!isLoaded} name = "effect" value={"0"}
-                       onChange={()=>{setEffectId(0)}} /> Чистый звук <br/>
-            </div>
+        <div id={"effectSelector"}>
+            <input type={"radio"} disabled={!isLoaded} name="effect" value={"2"}
+                   onChange={() => {
+                       setEffectId(2)
+                   }}/> Енвелоп <br/>
+            <input type={"radio"} disabled={!isLoaded} name="effect" value={"1"}
+                   onChange={() => {
+                       setEffectId(1)
+                   }}/> Ревербация <br/>
+            <input type={"radio"} disabled={!isLoaded} name="effect" value={"0"}
+                   onChange={() => {
+                       setEffectId(0)
+                   }}/> Чистый звук <br/>
+        </div>
         <div>
             {createHandler()}
         </div>
     </div>
-}
+};
 export default EffectsPanel;

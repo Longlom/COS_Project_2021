@@ -36,7 +36,7 @@ const Equaliser = () => {
         canvas.height = 300;
         let ctx = canvas.getContext("2d");
         let analyser = context.data.audioCtx.createAnalyser();
-        analyser.fftSize = 256;
+        analyser.fftSize = 8192;
         let bufferLength = analyser.frequencyBinCount;
         console.log(bufferLength);
         let dataArray = new Uint8Array(bufferLength);
@@ -52,11 +52,11 @@ const Equaliser = () => {
             x = 0;
             analyser.getByteFrequencyData(dataArray);
             fillExperimentalArray(dataArray);
-            ctx.fillStyle = "#b1b3b1";
+            ctx.fillStyle = "#000";
             ctx.fillRect(0, 0, width, height);
             for (let i = 0; i < bufferLength; i++) {
                 barHeight = dataArray[i];
-                ctx.fillStyle = `rgb(0, 128, 0)`;
+                ctx.fillStyle = `rgb(255,255,255)`;
                 ctx.fillRect(x, height - barHeight, barWidth, barHeight);
                 x += barWidth + 1;
             }
