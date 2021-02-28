@@ -11,6 +11,7 @@ const EffectsPanel = () => {
     const [isLoaded, setLoaded] = useState(false);
     const [effectId, setEffectId] = useState(0);
     const [param, setParams] = useState({});
+
     const duration = 100;
 
     const minGainAttack = 0;
@@ -38,6 +39,7 @@ const EffectsPanel = () => {
     const maxDecayRv = 5;
 
     const defaultOd = 0.1;
+
     const createEffect = (context) => {
         if (effectId === 2) {
 
@@ -272,7 +274,7 @@ const EffectsPanel = () => {
             <input type={"radio"} disabled={!isLoaded} name="effect" value={"0"}
                    onChange={() => {
                        setEffectId(0)
-                   }}/> Чистый звук <br/>
+                   }}/> Без эффектов <br/>
         </div>
         <div>
             {createHandler()}

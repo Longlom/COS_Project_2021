@@ -1,0 +1,12 @@
+.contols {
+    margin: 15px auto;
+    width: 500px;
+    display: flex;
+    justify-content: space-between;
+
+    background: transparent;
+}
+
+.contols > button {
+    padding: 10px 25px;
+}

@@ -56,7 +56,10 @@ const Equaliser = () => {
             ctx.fillRect(0, 0, width, height);
             for (let i = 0; i < bufferLength; i++) {
                 barHeight = dataArray[i];
-                ctx.fillStyle = `rgb(255,255,255)`;
+                let r =0;
+                let g = barHeight/height * 255;
+                let b = 0;
+                ctx.fillStyle = `rgb(${r},${g},${b})`;
                 ctx.fillRect(x, height - barHeight, barWidth, barHeight);
                 x += barWidth + 1;
             }

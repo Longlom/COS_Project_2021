@@ -40,7 +40,7 @@ const SoundSelector = () => {
             document.getElementById("selectWay").value = defaultWay;
             way = defaultWay;
         }}>
-            Путь по умолчанию
+            Звук
         </button>
         <button className={s['sound-selector__button_download']} onClick={setSourceNode}>Загрузить</button>
     </div>)

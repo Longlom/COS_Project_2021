@@ -1,6 +1,7 @@
 import './App.css';
 import {useContext, useState} from 'react'
 import {UserContext} from "./Context";
+import s from './styles/contols.module.css'
 
 
 let Controls = ()=>{
@@ -36,15 +37,15 @@ let Controls = ()=>{
         }
     })
     return (
-        <div className="App">
+        <div className={s.contols}>
             <button onClick={startPlaying} id={"start"} disabled={wasStarted || ! wasFileLoaded}>
-                Start
+                Начать
             </button>
             <button onClick={stopPlaying} id={"stop"} disabled={!(wasStarted && !wasStopped)}>
-                Stop
+                Пауза
             </button>
             <button onClick={reinit} id={"reinit"} disabled={!wasStopped}>
-                Reinit
+                Заново
             </button>
         </div>
     );
