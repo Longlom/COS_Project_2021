@@ -8,7 +8,7 @@ const EqualizerPanel = () => {
 
 
 
-    const passGail = 50;
+    const passGail = 0;
     const stopGail = -50;
     const defaultGain = 0;
 
@@ -48,22 +48,13 @@ const EqualizerPanel = () => {
         value.frequency = (value.max + value.min) / 2;
         value.bandwindth = (value.max - value.min) / 2;
         return value;
-    })
+    });
 
-    let setQ = () => {
-        Q = document.getElementById("control_q").value;
-        console.log(filters)
-        if (filters)
-            filters = filters.map((value, index, array) => {
-                value.Q.value = Q;
-                return value;
-            })
-    }
     let filters = bandwidthArray.map((value, index) => {
         let filter = context.data.audioCtx.createBiquadFilter();
         filter.type = 'peaking'; // тип фильтра (узкополосный пиковый фильтр)
         filter.frequency.value = value.frequency;
-        filter.Q.value = Q;
+        filter.Q.value = 5;
         filter.gain.value = defaultGain;
         return filter;
     });
@@ -94,9 +85,9 @@ const EqualizerPanel = () => {
         let filtersData = '';
         filters.forEach((value, index, array) => {
             filtersData += value.gain.value + " ";
-        })
+        });
         console.log(filters);
-    }
+    };
     const generateControls = () => {
         for (let i = 0; i < bandwidthNumber; i++) {
             let style = {
@@ -104,7 +95,7 @@ const EqualizerPanel = () => {
                 display: "inline-block",
                 marginTop: "5%",
                 marginBottom: "5%"
-            }
+            };
             let onChange = () => {
                 if (filters)
                     filters = filters.map((value, index, array) => {
@@ -112,7 +103,7 @@ const EqualizerPanel = () => {
                         debugOutput();
                         return value;
                     });
-            }
+            };
             let control = <input
                 min={stopGail}
                 max={passGail}
@@ -122,27 +113,15 @@ const EqualizerPanel = () => {
                 id={"control_" + i}
                 onChange={onChange}
 
-            />
+            />;
             controlsArray.push(control)
         }
-    }
+    };
 
     generateControls();
 
     return <div className={s.contols}>
         {controlsArray}
-        <br/>
-        <div>
-            <div>
-                Q (добротность)
-            </div>
-            <input min={1} max={100} type={"range"}
-                   id={"control_q"} onChange={() => {
-                setQ()
-            }}
-                   defaultValue={1}
-            />
-        </div>
         <br/>
         <div>
             <div>

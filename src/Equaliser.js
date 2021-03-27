@@ -3,32 +3,7 @@ import {UserContext} from "./Context";
 
 const Equaliser = () => {
     let context = useContext(UserContext);
-    const [link, setLink] = useState(<div/>);
-    let experimentalOutputtoFile = (str) => {
-        let href = "data:text/plain;charset=utf-8,%EF%BB%BF" + encodeURIComponent(str);
-        let s =
-            <div>
-                <br/>
-                <a href={href}
-                   download="text.txt">
-                    text.txt
-                </a>
-            </div>
-        setLink(s);
-    };
 
-    const fillExperimentalArray = (array) => {
-        let limit = 300;
-        if (arrayOfExperimentalData.length < limit)
-            arrayOfExperimentalData.push(JSON.parse(JSON.stringify(array)));
-        else {
-            if (!writen) {
-                writeExperimental();
-                writen = 1;
-                console.log(arrayOfExperimentalData)
-            }
-        }
-    };
 
     const setAnalyserConnected = (sourceNode) => {
         let canvas = document.getElementById("canvas");
@@ -51,7 +26,6 @@ const Equaliser = () => {
             requestAnimationFrame(renderFrame);
             x = 0;
             analyser.getByteFrequencyData(dataArray);
-            fillExperimentalArray(dataArray);
             ctx.fillStyle = "#000";
             ctx.fillRect(0, 0, width, height);
             for (let i = 0; i < bufferLength; i++) {
@@ -68,17 +42,6 @@ const Equaliser = () => {
         return analyser;
     };
 
-    const writeExperimental = () => {
-        let writeString = "";
-        writeString = JSON.stringify(arrayOfExperimentalData).replace(/(\[\{)|(\}\])/g, "")
-            .replace(/\}\,\{/g, "\n").replace(/\,/g, "")
-            .replace(/\"\d+":/g, "\t");
-        experimentalOutputtoFile(writeString);
-    };
-
-    let arrayOfExperimentalData = [];
-    let writen = false;
-
 
     (() => {
         let data = context.data;
@@ -88,7 +51,6 @@ const Equaliser = () => {
 
     return <div>
         <canvas id="canvas"/>
-        {link}
     </div>
 };
 

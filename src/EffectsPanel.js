@@ -30,15 +30,6 @@ const EffectsPanel = () => {
     const minRelease = 0;
     const maxRelease = duration;
 
-    const minSecondsRv = 0.1;
-    const maxSecondsRv = 5;
-    const defaultSecondsRv = 3;
-
-    const defaultDecayRv = 2;
-    const minDecayRv = 0.1;
-    const maxDecayRv = 5;
-
-    const defaultOd = 0.1;
 
     const createEffect = (context) => {
         if (effectId === 2) {
@@ -66,7 +57,11 @@ const EffectsPanel = () => {
             return gain;
         }
         if (effectId === 1) {
-            return new SimpleReverb(context, param)
+            return new SimpleReverb(context, {
+                seconds: 3,
+                decay: 2,
+                reverse: 1
+            })
         }
     };
 
@@ -186,65 +181,7 @@ const EffectsPanel = () => {
         }
 
         if (effectId === 1) {
-            let styleRever = {
-                display: "inline-block",
-                width: "33%"
-            };
-
-            return <div  className={s['effects-regulation']}>
-                <div className={s['effects-regulation__header']}>Reverberation Settings</div>
-
-                <div style={styleRever}>
-                    <div >
-                        seconds {/*Impulse response length.*/}
-                    </div>
-                    <input type={"range"}
-                           min={minSecondsRv}
-                           max={maxSecondsRv}
-                           step={"0.1"}
-                           defaultValue={defaultSecondsRv}
-                           id={"seconds"}
-                           onChange={() => {
-                               let paramLocal = param;
-                               paramLocal.seconds = document.getElementById("seconds").value;
-                               setParams(paramLocal);
-                               console.log(param)
-                           }}
-                    />
-                </div>
-                <div style={styleRever}>
-                    <div>
-                        decay {/*Impulse response decay rate*/}
-                    </div>
-                    <input type={"range"}
-                           min={minDecayRv}
-                           max={maxDecayRv}
-                           step={"0.1"}
-                           defaultValue={defaultDecayRv}
-                           id={"decay"}
-                           onChange={() => {
-                               let paramLocal = param;
-                               paramLocal.decay = document.getElementById("decay").value;
-                               setParams(paramLocal);
-                           }}
-                    />
-                </div>
-                <div style={styleRever}>
-                    <div>
-                        reverse {/*Reverse the impulse response.*/}
-                    </div>
-                    <input type={"checkbox"}
-                           defaultValue={defaultOd}
-                           id={"reverse"}
-                           onChange={() => {
-                               let paramLocal = param;
-                               paramLocal.reverse = document.getElementById("reverse").checked;
-                               setParams(paramLocal);
-                               console.log(param)
-                           }}
-                    />
-                </div>
-            </div>
+            return <div>Ввод дополнительных параметров не требуется</div>
         }
         return <div>Ввод дополнительных параметров не требуется</div>
     };
