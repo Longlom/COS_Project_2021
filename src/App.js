@@ -2,7 +2,7 @@ import './App.css';
 import EffectsPanel from "./EffectsPanel";
 import EqualizerPanel from "./EqualizerPanel";
 import SoundSelector from "./SoundSelector";
-import {useContext} from 'react'
+import {useContext, useEffect} from 'react'
 import {UserContext} from "./Context";
 import Controls from "./Controls";
 import Equaliser from "./Equaliser";
@@ -19,6 +19,15 @@ function App() {
     if (!context.data.audioCtx)
         setAudioCtx();
 
+    const loadModule = async () => {
+        await context.data.audioCtx.audioWorklet.addModule(
+            "ringbuffer/ring-buffer-worklet-processor.js"
+        );
+    };
+    useEffect(() => {
+        loadModule();
+        // eslint-disable-next-line
+    }, []);
     return (
         <div className="App">
             <SoundSelector/>

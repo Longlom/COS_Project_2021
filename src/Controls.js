@@ -14,8 +14,10 @@ let Controls = ()=>{
         let nodeWithEffect = context.data.getNodeWithEffect(context.data.sourceNode)
         let nodeWithEqualizerAndEffects = context.data.getNodeWithEqualization(nodeWithEffect);
         let nodeWithGraphicsAndAnalyser = context.data.getNodeWithAnalyser(nodeWithEqualizerAndEffects);
+        console.log(context.data);
         nodeWithGraphicsAndAnalyser.connect(context.data.audioCtx.destination)
         context.data.sourceNode.start();
+        console.log(context.data.audioCtx.audioWorklet);
         setStarted(true);
     }
     let stopPlaying = ()=>{

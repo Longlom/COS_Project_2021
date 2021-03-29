@@ -8,7 +8,6 @@ const SoundSelector = () => {
     const defaultWay = "https://file-examples-com.github.io/uploads/2017/11/file_example_MP3_5MG.mp3";
     let way = defaultWay;
     const setSourceNode = () => {
-
         fetchAsAudioBuffer(context.data.audioCtx, way).then(
             (audioBuffer) => {
                 let sourceNode = context.data.audioCtx.createBufferSource();
@@ -29,6 +28,26 @@ const SoundSelector = () => {
         data.setSourceNode = setSourceNode;
         context.setData(data);
     })();
+
+    // (() => {
+    //     const getNodeWithRingBuffer = (sourceNode) => {
+    //         const ringBuffer = new AudioWorkletNode(
+    //             context.data.audioCtx,
+    //             "ring-buffer-worklet-processor",
+    //             {
+    //                 processorOptions: {
+    //                     kernelBufferSize: 1024,
+    //                     channelCount: 2,
+    //                 },
+    //             }
+    //         );
+    //         sourceNode.connect(ringBuffer);
+    //         return ringBuffer;
+    //     };
+    //     let data = context.data;
+    //     data.getNodeWithRingBuffer = getNodeWithRingBuffer;
+    //     context.setData(data)
+    // })();
 
     console.log(s);
     return (<div className={s['sound-selector']}>

@@ -4,10 +4,6 @@ import s from './styles/equalizerPanel.module.css'
 
 const EqualizerPanel = () => {
 
-
-
-
-
     const passGail = 0;
     const stopGail = -50;
     const defaultGain = 0;
@@ -65,7 +61,17 @@ const EqualizerPanel = () => {
 
             volumeControl = context.data.audioCtx.createGain();
             volumeControl.gain.value = 1;
-            sourceNode.connect(filters[0]);
+            const ringBuffer = new AudioWorkletNode(
+                            context.data.audioCtx,
+                            "ring-buffer-worklet-processor",
+                            {
+                                processorOptions: {
+                                    kernelBufferSize: 16,
+                                    channelCount: 2,
+                                },
+                            }
+                        );
+            sourceNode.connect(ringBuffer).connect(filters[0]);
 
             for (let i = 0; i < filters.length - 1; i++) {
                 filters[i].connect(filters[i + 1]);
