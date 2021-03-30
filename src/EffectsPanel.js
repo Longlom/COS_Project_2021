@@ -61,22 +61,21 @@ const EffectsPanel = () => {
                 seconds: 3,
                 decay: 2,
                 reverse: 1
-            })
+            }).input;
         }
     };
 
     const getNodeWithEffect = (sourceNode) => {
         if (effectId) {
             let effect = createEffect(context.data.audioCtx, effectId);
-            console.log(effect);
+            console.log(effect, 'EFFECT');
             if (effectId === 2) {
                 sourceNode.connect(effect);
             } else {
-                sourceNode.connect(effect.input);
+                sourceNode.connect(effect);
             }
             return effect;
-        } else
-            return sourceNode;
+        } else return sourceNode;
     };
     const createHandler = () => {
         if (effectId === 2) {

@@ -50,7 +50,7 @@ const EqualizerPanel = () => {
         let filter = context.data.audioCtx.createBiquadFilter();
         filter.type = 'peaking'; // тип фильтра (узкополосный пиковый фильтр)
         filter.frequency.value = value.frequency;
-        filter.Q.value = 5;
+        filter.Q.value = 3;
         filter.gain.value = defaultGain;
         return filter;
     });
@@ -58,7 +58,6 @@ const EqualizerPanel = () => {
 
     const getAllNode = () => {
         const getNodeWithEqualization = (sourceNode) => {
-
             volumeControl = context.data.audioCtx.createGain();
             volumeControl.gain.value = 1;
             const ringBuffer = new AudioWorkletNode(
@@ -66,11 +65,13 @@ const EqualizerPanel = () => {
                             "ring-buffer-worklet-processor",
                             {
                                 processorOptions: {
-                                    kernelBufferSize: 16,
+                                    kernelBufferSize: 100000,
                                     channelCount: 2,
                                 },
                             }
                         );
+            console.log(sourceNode, 'SOURCE NODE');
+            console.log(sourceNode.connect(ringBuffer), 'CONNECT');
             sourceNode.connect(ringBuffer).connect(filters[0]);
 
             for (let i = 0; i < filters.length - 1; i++) {
@@ -78,7 +79,7 @@ const EqualizerPanel = () => {
             }
             filters[filters.length - 1].connect(volumeControl);
             return volumeControl;
-        }
+        };
         let data = context.data;
         data.getNodeWithEqualization = getNodeWithEqualization;
         context.setData(data)
@@ -131,7 +132,7 @@ const EqualizerPanel = () => {
         <br/>
         <div>
             <div>
-                Volume (громокость)
+                Громокость
             </div>
             <input min={0}
                    max={1}

@@ -29,25 +29,6 @@ const SoundSelector = () => {
         context.setData(data);
     })();
 
-    // (() => {
-    //     const getNodeWithRingBuffer = (sourceNode) => {
-    //         const ringBuffer = new AudioWorkletNode(
-    //             context.data.audioCtx,
-    //             "ring-buffer-worklet-processor",
-    //             {
-    //                 processorOptions: {
-    //                     kernelBufferSize: 1024,
-    //                     channelCount: 2,
-    //                 },
-    //             }
-    //         );
-    //         sourceNode.connect(ringBuffer);
-    //         return ringBuffer;
-    //     };
-    //     let data = context.data;
-    //     data.getNodeWithRingBuffer = getNodeWithRingBuffer;
-    //     context.setData(data)
-    // })();
 
     console.log(s);
     return (<div className={s['sound-selector']}>
